@@ -11,7 +11,7 @@ option BonusRoll.HealthDamage
 
 option BonusRoll.DamageEffect
 {
-    type = double, min = 0.00, max = 100, default = 0.02,
+    type = double, min = 0.00, max = 100, default = 0.45,
 	page = BonusRoll, translation = BonusRoll_DamageEffect,
 }
 
@@ -20,3 +20,10 @@ option BonusRoll.hrsCooldown
 	type = integer, min = 0, max = 10000, default = 24,
 	page = BonusRoll, translation = BonusRoll_hrsCooldown,
 }
+
+option BonusRoll.loginResets
+{
+	type = boolean, default = false,
+	page = BonusRoll, translation = BonusRoll_loginResets,
+}
+

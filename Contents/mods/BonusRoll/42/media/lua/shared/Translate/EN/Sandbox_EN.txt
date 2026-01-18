@@ -12,6 +12,9 @@ Sandbox_EN = {
 	Sandbox_BonusRoll_DamageEffect  = "Damage Effect",
 	Sandbox_BonusRoll_DamageEffect_tooltip  = "Damage Penalty or Bonus",
 
+	Sandbox_BonusRoll_loginResets = "Login Resets",
+	Sandbox_BonusRoll_loginResets_tooltip  = "Sets Effect Duration And Cooldown back to 0 whenever you login",
+
 }
 
 

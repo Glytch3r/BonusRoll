@@ -25,8 +25,7 @@ function BonusRoll.doDiceRoll()
     md.roll = roll
     md.duration = BonusRoll.getDuration(roll)
 
-    --BonusRoll.applyEffect(roll)
-    --BonusRoll.doShowImage(roll)
+    BonusRoll.doShowImage(roll)
     if getCore():getDebug() then print(roll) end
     
 
@@ -51,32 +50,47 @@ function BonusRoll.invContext(plNum, context, items)
     for _, entry in ipairs(items) do
         local item = type(entry) == "table" and entry.items[1] or entry
         if BonusRoll.isDice(item) then
-            local title = "Bonus Roll"
             local isCanRoll = BonusRoll.isCanRoll()
-            if not isCanRoll then
-                local cd = BonusRoll.getCooldown()
-                if cd > 0 then
-                    title = tostring(title)..': Cooldown '..tostring(cd)
-                end
-            else
-                local dur = BonusRoll.getDuration()
-                if dur > 0 then
-                    title = tostring(title)..': Duration '..tostring(dur)
-                end
+            local effectStr = BonusRoll.getEffectString()
+            local cd = BonusRoll.getCooldown()
+            local dur = BonusRoll.getRemaining()
+
+            local title = "Bonus Roll"
+            if not isCanRoll and dur > 0 and effectStr ~= "" then
+                title = "Bonus Roll: "..tostring(effectStr)
             end
-            local opt = context:addOption(tostring(title), item, BonusRoll.doDiceRoll)
+
+            local opt = context:addOptionOnTop(title, item, BonusRoll.doDiceRoll)
             opt.iconTexture = getTexture("media/ui/BonusRoll/dice.png")
-            local tip = ISInventoryPaneContextMenu.addToolTip()
-            tip.description = "Roll the Dice to get Bonus or Penalty"
- 
             opt.notAvailable = not isCanRoll
-            local txt = BonusRoll.getEffectString()
-            if not isCanRoll and txt ~= "" then
-                tip.description = tostring(txt)
+
+            local tip = ISInventoryPaneContextMenu.addToolTip()
+
+            if isCanRoll then
+                tip.description = "Roll the Dice to get Bonus or Penalty"
+            else
+                local desc = ""
+
+                if cd > 0 then
+                    desc = "Cooldown: " .. tostring(cd)
+                end
+
+                if dur > 0 then
+                    if desc ~= "" then desc = desc .. "\n" end
+                    desc = desc .. "Duration: " .. tostring(dur)
+                end
+
+                if desc == "" then
+                    desc = "Roll the Dice to get Bonus or Penalty"
+                end
+
+                tip.description = desc
             end
+
             opt.toolTip = tip
         end
     end
 end
+
 Events.OnFillInventoryObjectContextMenu.Remove(BonusRoll.invContext)
 Events.OnFillInventoryObjectContextMenu.Add(BonusRoll.invContext)
