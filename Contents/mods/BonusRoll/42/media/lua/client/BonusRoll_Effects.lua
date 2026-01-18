@@ -53,7 +53,9 @@ function BonusRoll.doHealthEffect(roll)
 
     if roll == 6 then
         pl:setGodMod(true)
-        pl:setGodMod(false)
+        BonusRoll.pause(1, function()  
+            pl:setGodMod(false) 
+        end)
         return
     end
 end
