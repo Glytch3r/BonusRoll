@@ -10,7 +10,11 @@ BonusRoll.EffectsStringTab = {
     [5] = "Increased Attack Damage",
     [6] = "Full Heal",
 }
+BonusRoll.diceTab = {
+    ["Base.Dice"]=true,
+    ["Base.Dice_6"]=true,
 
+}
 function BonusRoll.getEffectString()
     local roll = BonusRoll.getBonusEffect()    
     return BonusRoll.EffectsStringTab[roll] or ""
@@ -46,7 +50,7 @@ function BonusRoll.isCanRoll()
 end
 
 function BonusRoll.isDice(item)
-    return item and item.getFullType and item:getFullType() == "Base.Dice"
+    return item and item.getFullType and BonusRoll.diceTab[item:getFullType()]
 end
 
 function BonusRoll.invContext(plNum, context, items)
