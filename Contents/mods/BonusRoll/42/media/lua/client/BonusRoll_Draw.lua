@@ -15,7 +15,7 @@ BonusRoll.ImgTab = {
 }
 
 function BonusRoll.getEffectImg(roll)
-    local img = BonusRoll.ImgTab[roll]
+    local img = BonusRoll.ImgTab[roll] or "Rolled.png"
     if not img or img == "" then return nil end
     return "media/ui/BonusRoll/" .. img
 end

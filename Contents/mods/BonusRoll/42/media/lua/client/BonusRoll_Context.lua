@@ -1,5 +1,6 @@
 --client/BonusRoll_Context.lua
 BonusRoll = BonusRoll or {}
+
 BonusRoll.EffectsStringTab = {
     [0] = "",
     [1] = "Reduced Movement Speed",
@@ -9,16 +10,18 @@ BonusRoll.EffectsStringTab = {
     [5] = "Increased Attack Damage",
     [6] = "Full Heal",
 }
+
 function BonusRoll.getEffectString()
     local roll = BonusRoll.getBonusEffect()    
-    return BonusRoll.EffectsStringTab[roll]
+    return BonusRoll.EffectsStringTab[roll] or ""
 end
 
 
 
 function BonusRoll.doDiceRoll()
+    local faceCount = 6 --just change this
     local pl = getPlayer() 
-    local roll = ZombRand(1, 7)
+    local roll = ZombRand(1, faceCount+1)
     local md = pl:getModData().BonusRoll
 
     md.cooldown = SandboxVars.BonusRoll.hrsCooldown
@@ -72,7 +75,7 @@ function BonusRoll.invContext(plNum, context, items)
                 local desc = ""
 
                 if cd > 0 then
-                    desc = "Cooldown: " .. tostring(cd)
+                    desc = "Cooldown: " .. tostring(cd).." Hours"
                 end
 
                 if dur > 0 then
