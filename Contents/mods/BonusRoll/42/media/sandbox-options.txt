@@ -27,3 +27,8 @@ option BonusRoll.loginResets
 	page = BonusRoll, translation = BonusRoll_loginResets,
 }
 
+option BonusRoll.showHitEffect
+{
+	type = boolean, default = true,
+	page = BonusRoll, translation = BonusRoll_showHitEffect,
+}

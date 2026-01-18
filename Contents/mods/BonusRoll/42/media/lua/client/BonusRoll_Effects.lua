@@ -70,13 +70,17 @@ function BonusRoll.hitEffect(pl, targ, wpn, dmg)
                 local hp = targ:getHealth()
                 if effect == 2 then
                     dmg = dmg - bonusDmg
-                    bonusStr= "Damage Penalty: -"..string.format("%.4f", bonusDmg)
+                    bonusStr = "Damage Penalty: -"..string.format("%.4f", bonusDmg)
                 elseif effect == 5 then
                     dmg = dmg + bonusDmg
-                    bonusStr= "Damage Bonus: +"..string.format("%.4f", bonusDmg)
+                    bonusStr = "Damage Bonus: +"..string.format("%.4f", bonusDmg)
                 end
-                pl:addLineChatElement(tostring(bonusStr))
-                print(bonusStr)
+                if SandboxVars.BonusRoll.showHitEffect then
+                    pl:addLineChatElement(tostring(bonusStr))
+                    if getCore():getDebug() then 
+                        print(bonusStr)
+                    end	
+                end
             end
         end
 
