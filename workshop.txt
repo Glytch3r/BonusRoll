@@ -1,0 +1,52 @@
+version=1
+id=
+title=BonusRoll
+description=[h1]BonusRoll[/h1]
+description=
+description=[list]
+description=    [*]
+description=    [*]
+description=    [*]
+description=    [*]
+description=    [*]
+description=    [*]
+description=[/list]
+description=
+description=
+description=[img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/divider.gif[/img]
+description=
+description=
+description=[img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/divider.gif[/img]
+description=
+description=[list]
+description=    [*]B42 SP
+description=    [*]Can be installed mid save
+description=[/list]
+description=
+description=[img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/divider.gif[/img]
+description=
+description=[quote=author]
+description=Mod by: [b]Glytch3r[/b]
+description=Commissioned by [b]Josko[/b]
+description=[/quote]
+description=
+description=[b]CONTACT:[/b]
+description=All my mods are commissioned including this one
+description=For custom pz mod commission requests Contact me via discord
+description=discord: glytch3r
+description=
+description=[img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/divider.gif[/img]
+description=[table noborder=1][tr]
+description=[td][url=https://steamcommunity.com/id/glytch3r][img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/hire.png[/img][/url][/td]
+description=[td][url=https://steamcommunity.com/id/glytch3r/myworkshopfiles][img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/serve.gif[/img][/url][/td]
+description=[td][url=https://ko-fi.com/glytch3r][img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/kofi.gif[/img][/url][/td]
+description=[/tr]
+description=[tr]
+description=[td][url=https://github.com/Glytch3r][img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/github.png[/img][/url][/td]
+description=[td][url=https://pinehosting.com/clientarea/aff.php?aff=960][img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/pinehosting.png[/img][/url][/td]
+description=[td][url=https://www.youtube.com/@glytch3r][img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/yt.gif[/img][/url][/td]
+description=[/tr][/table]
+description=[img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/like.gif[/img]
+description=[img]https://raw.githubusercontent.com/Glytch3r/images/main/Glytch3r/divider.gif[/img]
+tags=Build 41;Balance;Building;Food;Framework;Items;Military;Misc;Models;Multiplayer;Pop Culture;Realistic;Silly/Fun;Textures;Vehicles;Weapons
+visibility=public

@@ -1,0 +1,17 @@
+Sandbox_EN = {
+
+
+    Sandbox_BonusRoll = "BonusRoll",
+
+	Sandbox_BonusRoll_hrsCooldown  = "Cooldown Hours",
+	Sandbox_BonusRoll_hrsCooldown_tooltip  = "Number of Hours before players can roll again",
+
+	Sandbox_BonusRoll_HealthDamage  = "Health Damage",
+	Sandbox_BonusRoll_HealthDamage_tooltip  = "Health Penalty",
+
+	Sandbox_BonusRoll_DamageEffect  = "Damage Effect",
+	Sandbox_BonusRoll_DamageEffect_tooltip  = "Damage Penalty or Bonus",
+
+}
+
+

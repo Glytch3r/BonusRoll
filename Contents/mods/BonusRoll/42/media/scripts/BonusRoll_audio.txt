@@ -1,0 +1,5 @@
+module Base {
+	imports { Base }
+	sound BonusRoll { category = Item, clip { file = media/sound/BonusRoll.ogg, distanceMax = 80, is3D = true,  maxInstancesPerEmitter = 1, volume = 0.5, } }
+
+}
