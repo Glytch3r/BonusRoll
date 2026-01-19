@@ -67,16 +67,19 @@ function BonusRoll.hitEffect(pl, targ, wpn, dmg)
         if effect == 2 or effect == 5 then
             local bonusDmg = ZombRandFloat(0, SandboxVars.BonusRoll.DamageEffect)
             local bonusStr = "Damage "
-
+            local newDmg = 0
             if instanceof(targ, "IsoZombie")  then
                 local hp = targ:getHealth()
                 if effect == 2 then
-                    dmg = dmg - bonusDmg
+                    newDmg = dmg - bonusDmg
                     bonusStr = "Damage Penalty: -"..string.format("%.4f", bonusDmg)
+                    targ:setHeath(targ:getHeath()-newDmg)
                 elseif effect == 5 then
-                    dmg = dmg + bonusDmg
+                    newDmg = dmg + bonusDmg
                     bonusStr = "Damage Bonus: +"..string.format("%.4f", bonusDmg)
+                    targ:setHeath(targ:getHeath()+newDmg)
                 end
+           
                 if SandboxVars.BonusRoll.showHitEffect then
                     pl:addLineChatElement(tostring(bonusStr))
                     if getCore():getDebug() then 
