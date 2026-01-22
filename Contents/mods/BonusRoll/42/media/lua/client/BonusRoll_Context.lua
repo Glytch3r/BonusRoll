@@ -9,6 +9,7 @@ BonusRoll.EffectsStringTab = {
     [4] = "Increased Movement Speed",
     [5] = "Increased Attack Damage",
     [6] = "Full Heal",
+    [7] = "Spawn Weapon",
 }
 BonusRoll.diceTab = {
     ["Base.Dice"]=true,
@@ -38,7 +39,10 @@ function BonusRoll.doDiceRoll()
 
     if roll == 3 or roll == 6  then
         BonusRoll.doHealthEffect(roll)
+    elseif roll == 7  then
+        BonusRoll.doSpawnWeaponEffect()
     end
+
     pl:playSoundLocal("BonusRoll")
     return roll
 end

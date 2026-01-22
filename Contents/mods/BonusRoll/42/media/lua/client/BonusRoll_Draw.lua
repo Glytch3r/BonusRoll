@@ -12,6 +12,7 @@ BonusRoll.ImgTab = {
     [4] = "You-Rolled-Increased-Speed.png",
     [5] = "You-Rolled-Increased-Damage.png",
     [6] = "You-Rolled-Full-Heal.png",
+    [7] = "You-Rolled-Spawn-Weapon.png",
 }
 
 function BonusRoll.getEffectImg(roll)

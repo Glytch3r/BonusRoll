@@ -10,6 +10,7 @@ BonusRoll.durationTab = {
     [4] = 60,
     [5] = 60,
     [6] = 1,
+    [7] = 1,
 }
 function BonusRoll.init()
     if SandboxVars.BonusRoll.loginResets then
