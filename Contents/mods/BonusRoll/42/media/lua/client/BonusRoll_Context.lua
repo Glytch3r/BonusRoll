@@ -24,7 +24,7 @@ end
 
 
 function BonusRoll.doDiceRoll()
-    local faceCount = 6 --just change this
+    local faceCount = 7 --just change this
     local pl = getPlayer() 
     local roll = ZombRand(1, faceCount+1)
     local md = pl:getModData().BonusRoll
@@ -32,10 +32,14 @@ function BonusRoll.doDiceRoll()
     md.cooldown = SandboxVars.BonusRoll.hrsCooldown
     md.roll = roll
     md.duration = BonusRoll.getDuration(roll)
+    pl:playEmote('BonusRoll')
+    pl:playSoundLocal("BonusRoll")
 
-    BonusRoll.doShowImage(roll)
-    if getCore():getDebug() then print(roll) end
+    BonusRoll.pause(2, function() 
+        BonusRoll.doShowImage(roll)
+    end)
     
+    if getCore():getDebug() then print(roll) end
 
     if roll == 3 or roll == 6  then
         BonusRoll.doHealthEffect(roll)
@@ -43,7 +47,6 @@ function BonusRoll.doDiceRoll()
         BonusRoll.doSpawnWeaponEffect()
     end
 
-    pl:playSoundLocal("BonusRoll")
     return roll
 end
 
