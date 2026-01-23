@@ -2,16 +2,6 @@
 BonusRoll = BonusRoll or {}
 
 
-BonusRoll.durationTab = {
-    [0] = 0,
-    [1] = 60,
-    [2] = 60,
-    [3] = 1,
-    [4] = 60,
-    [5] = 60,
-    [6] = 1,
-    [7] = 1,
-}
 function BonusRoll.init()
     if SandboxVars.BonusRoll.loginResets then
         return BonusRoll.doReset()
@@ -32,6 +22,7 @@ function BonusRoll.doReset()
     md.BonusRoll.cooldown =  0
     md.BonusRoll.roll = 0
     md.BonusRoll.duration = 0
+    BonusRoll.delRadiusMarker()
 end
 function BonusRoll.getRemaining()
     local pl = getPlayer() 
@@ -63,13 +54,14 @@ end
 Events.EveryHours.Add(BonusRoll.cooldownHandler)
 
 function BonusRoll.durationHandler()
+    -- UIManager.getSpeedControls():getCurrentGameSpeed() 
+    if getGameTime():getTrueMultiplier() > 1 then return end
     local md = getPlayer():getModData().BonusRoll
     if md.duration > 0 then
         md.duration = math.max(0, md.duration - 1)
     elseif md.duration <= 0 then
         md.roll = 0
     end
-    
 end
 Events.EveryOneMinute.Add(BonusRoll.durationHandler)
 

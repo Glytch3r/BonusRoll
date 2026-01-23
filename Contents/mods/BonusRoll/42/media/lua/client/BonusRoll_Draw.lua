@@ -4,17 +4,6 @@ BonusRoll = BonusRoll or {}
 BonusRoll.drawPanel = nil
 BonusRoll.drawImagePath = nil
 
-BonusRoll.ImgTab = {
-    [0] = "",
-    [1] = "You-Rolled-Reduced-Speed.png",
-    [2] = "You-Rolled-Reduced-Damage.png",
-    [3] = "You-Rolled-Health-Damage.png",
-    [4] = "You-Rolled-Increased-Speed.png",
-    [5] = "You-Rolled-Increased-Damage.png",
-    [6] = "You-Rolled-Full-Heal.png",
-    [7] = "You-Rolled-Spawn-Weapon.png",
-}
-
 function BonusRoll.getEffectImg(roll)
     local img = BonusRoll.ImgTab[roll] or "Rolled.png"
     if not img or img == "" then return nil end

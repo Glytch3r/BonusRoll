@@ -93,3 +93,26 @@ function BonusRoll.hitEffect(pl, targ, wpn, dmg)
 end
 Events.OnWeaponHitCharacter.Remove(BonusRoll.hitEffect)
 Events.OnWeaponHitCharacter.Add(BonusRoll.hitEffect)
+
+function BonusRoll.delRadiusMarker()   
+    if BonusRoll.RadiusMarker then
+        BonusRoll.RadiusMarker:remove()
+        BonusRoll.RadiusMarker = nil
+    end
+end
+
+function BonusRoll.addRadiusMarker(pl, csq)
+    pl = pl or getPlayer()
+    if not pl or pl:isDead() then return end
+    csq = csq or pl:getCurrentSquare()
+    if not csq then return end
+
+    local r = 1
+    if SandboxVars.BonusRoll.RadiateAoEMarker then 
+        r = ZombRand(0, 101) / 100
+    end
+    BonusRoll.delRadiusMarker()
+    BonusRoll.RadiusMarker = getWorldMarkers():addGridSquareMarker( "circle_center", "circle_only_highlight", csq, r, r, r, true, r)
+end
+
+

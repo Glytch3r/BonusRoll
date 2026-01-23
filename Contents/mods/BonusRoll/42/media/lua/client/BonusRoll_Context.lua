@@ -1,30 +1,15 @@
 --client/BonusRoll_Context.lua
 BonusRoll = BonusRoll or {}
 
-BonusRoll.EffectsStringTab = {
-    [0] = "",
-    [1] = "Reduced Movement Speed",
-    [2] = "Reduced Attack Damage",
-    [3] = "Health Damage",
-    [4] = "Increased Movement Speed",
-    [5] = "Increased Attack Damage",
-    [6] = "Full Heal",
-    [7] = "Spawn Weapon",
-}
-BonusRoll.diceTab = {
-    ["Base.Dice"]=true,
-    ["Base.Dice_6"]=true,
 
-}
 function BonusRoll.getEffectString()
     local roll = BonusRoll.getBonusEffect()    
     return BonusRoll.EffectsStringTab[roll] or ""
 end
 
 
-
-function BonusRoll.doDiceRoll()
-    local faceCount = 7 --just change this
+function BonusRoll.doDiceRoll(item)
+    local faceCount = BonusRoll.faceCount
     local pl = getPlayer() 
     local roll = ZombRand(1, faceCount+1)
     local md = pl:getModData().BonusRoll
@@ -45,6 +30,11 @@ function BonusRoll.doDiceRoll()
         BonusRoll.doHealthEffect(roll)
     elseif roll == 7  then
         BonusRoll.doSpawnWeaponEffect()
+    elseif roll == 8  then
+        BonusRoll.pause(2, function() 
+            pl:playSoundLocal("BreakObject")
+            item:getContainer():DoRemoveItem(item)
+        end)
     end
 
     return roll
@@ -74,7 +64,7 @@ function BonusRoll.invContext(plNum, context, items)
                 title = "Bonus Roll: "..tostring(effectStr)
             end
 
-            local opt = context:addOptionOnTop(title, item, BonusRoll.doDiceRoll)
+            local opt = context:addOptionOnTop(title, item, function() BonusRoll.doDiceRoll(item) end)
             opt.iconTexture = getTexture("media/ui/BonusRoll/dice.png")
             opt.notAvailable = not isCanRoll
 
