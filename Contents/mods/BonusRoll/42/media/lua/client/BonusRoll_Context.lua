@@ -18,16 +18,17 @@ end
 
 function BonusRoll.doDiceRoll(item)
     local pl = getPlayer()
-    if not pl or not item then return end
+    if not pl or not item then return 0 end
 
     local fType = item:getFullType()
     local md = pl:getModData().BonusRoll
-    if not md then return end
+    if not md then return 0 end
 
     local dice = md[fType]
-    if not dice or dice.cooldown > 0 then return end
+    if not dice or dice.cooldown > 0 then return 0 end
 
     local roll = BonusRoll.rollUnique(md)
+    if not roll then return 0 end
 
     dice.roll = roll
     dice.duration = BonusRoll.getDuration(roll)
@@ -46,13 +47,22 @@ function BonusRoll.doDiceRoll(item)
         BonusRoll.doSpawnWeaponEffect()
     elseif roll == 8 then
         BonusRoll.pause(2, function()
-            pl:playSoundLocal("BreakObject")
-            item:getContainer():DoRemoveItem(item)
+            local bd = pl:getBodyDamage()
+            if not bd then return roll end
+
+            local parts = bd:getBodyParts()
+            if not parts then return roll end
+
+            local part = parts:get(ZombRand(1, parts:size() + 1))
+            if part then 
+                part:setFractureTime(21)
+            end
         end)
     end
 
     return roll
 end
+
 
 function BonusRoll.isCanRoll(fType)
     local md = getPlayer():getModData().BonusRoll
