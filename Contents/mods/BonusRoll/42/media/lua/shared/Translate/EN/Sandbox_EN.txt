@@ -18,6 +18,18 @@ Sandbox_EN = {
 	Sandbox_BonusRoll_showHitEffect = "Show Hit Overhead",
 	Sandbox_BonusRoll_showHitEffect_tooltip = "Show Hit Bonus or Penalty",
 
+    Sandbox_BonusRoll_RadiateAoEMarker = "Show AoE Marker",
+    Sandbox_BonusRoll_RadiateAoEMarker_tooltip = "Display visual marker for zombie damage area of effect radius",
+
+    Sandbox_BonusRoll_RandomInjuryInfect = "Random Injury Infection",
+    Sandbox_BonusRoll_RandomInjuryInfect_tooltip = "Allow bite injuries from random rolls to cause zombie infection",
+
+	Sandbox_BonusRoll_zedAoEDist = "Zombie AoE Distance",
+    Sandbox_BonusRoll_zedAoEDist_tooltip = "Distance in tiles for the zombie damage area of effect",
+
+    Sandbox_BonusRoll_zedAoEDPS = "Zombie AoE DPS",
+    Sandbox_BonusRoll_zedAoEDPS_tooltip = "Damage per second dealt to zombies within AoE range",
+
 }
 
 

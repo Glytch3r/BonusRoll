@@ -1,3 +1,24 @@
+----------------------------------------------------------------
+-----  ▄▄▄   ▄    ▄   ▄  ▄▄▄▄▄   ▄▄▄   ▄   ▄   ▄▄▄    ▄▄▄  -----
+----- █   ▀  █    █▄▄▄█    █    █   ▀  █▄▄▄█  ▀  ▄█  █ ▄▄▀ -----
+----- █  ▀█  █      █      █    █   ▄  █   █  ▄   █  █   █ -----
+-----  ▀▀▀▀  ▀▀▀▀   ▀      ▀     ▀▀▀   ▀   ▀   ▀▀▀   ▀   ▀ -----
+----------------------------------------------------------------
+--                                                            --
+--   Project Zomboid Modding Commissions                      --
+--   https://steamcommunity.com/id/glytch3r/myworkshopfiles   --
+--                                                            --
+--   ▫ Discord  ꞉   glytch3r                                  --
+--   ▫ Support  ꞉   https://ko-fi.com/glytch3r                --
+--   ▫ Youtube  ꞉   https://www.youtube.com/@glytch3r         --
+--   ▫ Github   ꞉   https://github.com/Glytch3r               --
+--                                                            --
+----------------------------------------------------------------
+----- ▄   ▄   ▄▄▄   ▄   ▄   ▄▄▄     ▄      ▄   ▄▄▄▄  ▄▄▄▄  -----
+----- █   █  █   ▀  █   █  ▀   █    █      █      █  █▄  █ -----
+----- ▄▀▀ █  █▀  ▄  █▀▀▀█  ▄   █    █    █▀▀▀█    █  ▄   █ -----
+-----  ▀▀▀    ▀▀▀   ▀   ▀   ▀▀▀   ▀▀▀▀▀  ▀   ▀    ▀   ▀▀▀  -----
+----------------------------------------------------------------
 --client/BonusRoll_Table.lua
 BonusRoll = BonusRoll or {}
 
@@ -12,7 +33,7 @@ BonusRoll.EffectsStringTab = {
     [5] = "Increased Attack Damage",
     [6] = "Full Heal",
     [7] = "Spawn Weapon",
-    [8] = "Broken Bone",
+    [8] = "Injury",
     [9] = "AoE",
     [10] = "Zed Attract",
     [11] = "Reset Dice Rolls",
@@ -28,7 +49,7 @@ BonusRoll.ImgTab = {
     [5] = "You-Rolled-Increased-Damage.png",
     [6] = "You-Rolled-Full-Heal.png",
     [7] = "You-Rolled-Spawn-Weapon.png",
-    [8] = "You-Rolled-Broken-Bone.png",
+    [8] = "You-Rolled-Injury.png",
     [9] = "You-Rolled-AoE.png",
     [10] = "You-Rolled-Zed-Attract.png",
     [11] = "You-Rolled-Reset.png",

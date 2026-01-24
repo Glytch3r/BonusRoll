@@ -1,3 +1,24 @@
+----------------------------------------------------------------
+-----  ▄▄▄   ▄    ▄   ▄  ▄▄▄▄▄   ▄▄▄   ▄   ▄   ▄▄▄    ▄▄▄  -----
+----- █   ▀  █    █▄▄▄█    █    █   ▀  █▄▄▄█  ▀  ▄█  █ ▄▄▀ -----
+----- █  ▀█  █      █      █    █   ▄  █   █  ▄   █  █   █ -----
+-----  ▀▀▀▀  ▀▀▀▀   ▀      ▀     ▀▀▀   ▀   ▀   ▀▀▀   ▀   ▀ -----
+----------------------------------------------------------------
+--                                                            --
+--   Project Zomboid Modding Commissions                      --
+--   https://steamcommunity.com/id/glytch3r/myworkshopfiles   --
+--                                                            --
+--   ▫ Discord  ꞉   glytch3r                                  --
+--   ▫ Support  ꞉   https://ko-fi.com/glytch3r                --
+--   ▫ Youtube  ꞉   https://www.youtube.com/@glytch3r         --
+--   ▫ Github   ꞉   https://github.com/Glytch3r               --
+--                                                            --
+----------------------------------------------------------------
+----- ▄   ▄   ▄▄▄   ▄   ▄   ▄▄▄     ▄      ▄   ▄▄▄▄  ▄▄▄▄  -----
+----- █   █  █   ▀  █   █  ▀   █    █      █      █  █▄  █ -----
+----- ▄▀▀ █  █▀  ▄  █▀▀▀█  ▄   █    █    █▀▀▀█    █  ▄   █ -----
+-----  ▀▀▀    ▀▀▀   ▀   ▀   ▀▀▀   ▀▀▀▀▀  ▀   ▀    ▀   ▀▀▀  -----
+----------------------------------------------------------------
 --client/BonusRoll_Effects.lua
 BonusRoll = BonusRoll or {}
 
@@ -17,8 +38,8 @@ function BonusRoll.getIsInPlay(roll)
 
     return false
 end
-
-function BonusRoll.getDiceEffect(fType)
+--[[ 
+--function BonusRoll.getDiceEffect(fType)
     if not fType then return 0 end
 
     local md = getPlayer():getModData().BonusRoll
@@ -28,7 +49,7 @@ function BonusRoll.getDiceEffect(fType)
     if not dice then return 0 end
     return dice.roll or 0
 end
-
+ ]]
 function BonusRoll.speedEffectHandler(pl)
     if not pl then return end
     if pl:isAiming() then return end
@@ -92,25 +113,24 @@ function BonusRoll.doHealthEffect(roll)
         return
     end
 end
-
 function BonusRoll.hitEffect(pl, targ, wpn, dmg)
     if pl == targ then return end
     if pl ~= getPlayer() then return end
+    local isRoll2 = BonusRoll.getIsInPlay(2)
+    local isRoll5 = BonusRoll.getIsInPlay(5)
 
-    local effects = BonusRoll.getBonusEffects()
-
-    if  BonusRoll.getIsInPlay(2) or  BonusRoll.getIsInPlay(5) then
+    if isRoll2  or  isRoll5 then
         local bonusDmg = ZombRandFloat(0, SandboxVars.BonusRoll.DamageEffect)
         local bonusStr = "Damage "
         local newDmg = 0
         if instanceof(targ, "IsoZombie") then
-            if BonusRoll.getIsInPlay(2) then
+            if isRoll2 then
                 newDmg = dmg - bonusDmg
                 bonusStr = "Damage Penalty: -"..string.format("%.4f", bonusDmg)
                 targ:setHeath(targ:getHeath()-newDmg)
             end
 
-            if BonusRoll.getIsInPlay(5) then
+            if isRoll5 then
                 newDmg = dmg + bonusDmg
                 bonusStr = "Damage Bonus: +"..string.format("%.4f", bonusDmg)
                 targ:setHeath(targ:getHeath()+newDmg)

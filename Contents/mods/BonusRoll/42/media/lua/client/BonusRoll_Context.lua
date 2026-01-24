@@ -1,3 +1,24 @@
+----------------------------------------------------------------
+-----  ▄▄▄   ▄    ▄   ▄  ▄▄▄▄▄   ▄▄▄   ▄   ▄   ▄▄▄    ▄▄▄  -----
+----- █   ▀  █    █▄▄▄█    █    █   ▀  █▄▄▄█  ▀  ▄█  █ ▄▄▀ -----
+----- █  ▀█  █      █      █    █   ▄  █   █  ▄   █  █   █ -----
+-----  ▀▀▀▀  ▀▀▀▀   ▀      ▀     ▀▀▀   ▀   ▀   ▀▀▀   ▀   ▀ -----
+----------------------------------------------------------------
+--                                                            --
+--   Project Zomboid Modding Commissions                      --
+--   https://steamcommunity.com/id/glytch3r/myworkshopfiles   --
+--                                                            --
+--   ▫ Discord  ꞉   glytch3r                                  --
+--   ▫ Support  ꞉   https://ko-fi.com/glytch3r                --
+--   ▫ Youtube  ꞉   https://www.youtube.com/@glytch3r         --
+--   ▫ Github   ꞉   https://github.com/Glytch3r               --
+--                                                            --
+----------------------------------------------------------------
+----- ▄   ▄   ▄▄▄   ▄   ▄   ▄▄▄     ▄      ▄   ▄▄▄▄  ▄▄▄▄  -----
+----- █   █  █   ▀  █   █  ▀   █    █      █      █  █▄  █ -----
+----- ▄▀▀ █  █▀  ▄  █▀▀▀█  ▄   █    █    █▀▀▀█    █  ▄   █ -----
+-----  ▀▀▀    ▀▀▀   ▀   ▀   ▀▀▀   ▀▀▀▀▀  ▀   ▀    ▀   ▀▀▀  -----
+----------------------------------------------------------------
 --client/BonusRoll_Draw.lua
 BonusRoll = BonusRoll or {}
 
@@ -46,23 +67,95 @@ function BonusRoll.doDiceRoll(item)
     elseif roll == 7 then
         BonusRoll.doSpawnWeaponEffect()
     elseif roll == 8 then
-        BonusRoll.pause(2, function()
-            local bd = pl:getBodyDamage()
-            if not bd then return roll end
-
-            local parts = bd:getBodyParts()
-            if not parts then return roll end
-
-            local part = parts:get(ZombRand(1, parts:size() + 1))
-            if part then 
-                part:setFractureTime(21)
-            end
-        end)
+        BonusRoll.doRandInjuryEffect()
     end
 
+    if getCore():getDebug() then print(roll) end
+
+    
     return roll
 end
 
+function BonusRoll.doRandInjuryEffect()
+    local pl = getPlayer() 
+    local bd = pl:getBodyDamage()
+    if not bd then return roll end
+    local parts = bd:getBodyParts()
+    if not parts then return roll end
+    local part = parts:get(ZombRand(0, parts:size()))
+    if not part then return roll end
+
+    local injuries = {
+        "Scratch",
+        "Cut",
+        "DeepWound",
+        "Bitten",
+        "Bleeding",
+        "InfectedWound",
+        "Bullet",
+        "Glass",
+        "Fracture",
+        "Burn"
+    }
+    local RandomInjuryInfect = SandboxVars.BonusRoll.RandomInjuryInfect
+    local tries = 0
+    while tries < #injuries do
+        local idx = ZombRand(1, #injuries + 1)
+        local injury = injuries[idx]
+        
+        if injury == "Scratch" and part:getScratchTime() == 0 then
+            part:setScratched(true, false)
+            part:setScratchTime(21)
+            break
+        end
+        if injury == "Cut" and not part:isCut() then
+            part:setCut(true)
+            part:setCutTime(21)
+            break
+        end
+        if injury == "DeepWound" and not part:isDeepWounded() then
+            part:generateDeepWound()
+            break
+        end
+        if injury == "Bitten" and not part:bitten() then
+            part:SetBitten(true)
+            part:SetFakeInfected(true)
+            if RandomInjuryInfect then
+                part:SetInfected(true)
+            end
+            break
+        end
+        if injury == "Bleeding" and part:getBleedingTime() == 0 then
+            part:setBleedingTime(21)
+            break
+        end
+        if injury == "InfectedWound" and not part:isInfectedWound() then
+            part:setWoundInfectionLevel(10)
+            break
+        end
+        if injury == "Bullet" and not part:haveBullet() then
+            part:setHaveBullet(true, 0)
+            break
+        end
+        if injury == "Glass" and not part:haveGlass() then
+            part:generateDeepShardWound()
+            break
+        end
+        if injury == "Fracture" and part:getFractureTime() == 0 then
+            part:setFractureTime(21)
+            break
+        end
+        if injury == "Burn" and part:getBurnTime() == 0 then
+            part:setBurnTime(50)
+            part:setNeedBurnWash(true)
+            break
+        end
+        tries = tries + 1
+    end
+
+    return roll
+
+end
 
 function BonusRoll.isCanRoll(fType)
     local md = getPlayer():getModData().BonusRoll
