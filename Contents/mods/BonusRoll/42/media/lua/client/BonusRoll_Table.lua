@@ -15,6 +15,8 @@ BonusRoll.EffectsStringTab = {
     [8] = "Dice Broke",
     [9] = "AoE",
     [10] = "Zed Attract",
+    [11] = "Reset Dice Rolls",
+
 }
 
 BonusRoll.ImgTab = {
@@ -29,6 +31,7 @@ BonusRoll.ImgTab = {
     [8] = "Dice-Broke.png",
     [9] = "You-Rolled-AoE.png",
     [10] = "You-Rolled-Zed-Attract.png",
+    [11] = "You-Rolled-Reset.png",
 
 }
 
@@ -44,6 +47,8 @@ BonusRoll.durationTab = {
     [8] = 1, 
     [9] = 60,
     [10] = 60, 
+    [11] = 1, 
+
 }
 
 BonusRoll.weaponList = {

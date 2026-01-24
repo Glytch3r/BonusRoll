@@ -7,12 +7,13 @@ BonusRoll.drawImagePath = nil
 function BonusRoll.getEffectImg(roll)
     local img = BonusRoll.ImgTab[roll] or "Rolled.png"
     if not img or img == "" then return nil end
-    return "media/ui/BonusRoll/" .. img
+    return "media/ui/BonusRoll/" .. tostring(img)
 end
 
 function BonusRoll.setDrawImage(dir, active)
     if not active then
         if BonusRoll.drawPanel then
+            BonusRoll.drawPanel:setVisible(false)
             BonusRoll.drawPanel:removeFromUIManager()
             BonusRoll.drawPanel = nil
         end
@@ -40,11 +41,10 @@ function BonusRoll.setDrawImage(dir, active)
     BonusRoll.drawPanel = ISPanel:new(x, y, w, h)
     BonusRoll.drawPanel:initialise()
     BonusRoll.drawPanel:noBackground()
-    --BonusRoll.drawPanel:setConsumeMouseEvents(false)
     BonusRoll.drawPanel:setCapture(false)
     BonusRoll.drawPanel:setAlwaysOnTop(true)
     BonusRoll.drawPanel:addToUIManager()
-
+    BonusRoll.drawPanel:setVisible(true)
     BonusRoll.drawPanel.render = function(self)
         self:drawTextureScaled(
             getTexture(BonusRoll.drawImagePath),
@@ -62,4 +62,3 @@ function BonusRoll.doShowImage(roll)
         BonusRoll.setDrawImage(nil, false)
     end)
 end
-

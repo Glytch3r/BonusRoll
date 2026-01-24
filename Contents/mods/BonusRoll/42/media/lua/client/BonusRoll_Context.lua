@@ -1,37 +1,51 @@
---client/BonusRoll_Context.lua
+--client/BonusRoll_Draw.lua
 BonusRoll = BonusRoll or {}
 
-
-function BonusRoll.getEffectString()
-    local roll = BonusRoll.getBonusEffect()    
+function BonusRoll.getEffectString(roll)
     return BonusRoll.EffectsStringTab[roll] or ""
 end
 
+function BonusRoll.rollUnique(md)
+    local faceCount = BonusRoll.faceCount
+    local roll = ZombRand(1, faceCount + 1)
+
+    while BonusRoll.getIsInPlay(roll)  do
+        roll = ZombRand(1, faceCount + 1)
+    end
+
+    return roll
+end
 
 function BonusRoll.doDiceRoll(item)
-    local faceCount = BonusRoll.faceCount
-    local pl = getPlayer() 
-    local roll = ZombRand(1, faceCount+1)
-    local md = pl:getModData().BonusRoll
+    local pl = getPlayer()
+    if not pl or not item then return end
 
-    md.cooldown = SandboxVars.BonusRoll.hrsCooldown
-    md.roll = roll
-    md.duration = BonusRoll.getDuration(roll)
-    pl:playEmote('BonusRoll')
+    local fType = item:getFullType()
+    local md = pl:getModData().BonusRoll
+    if not md then return end
+
+    local dice = md[fType]
+    if not dice or dice.cooldown > 0 then return end
+
+    local roll = BonusRoll.rollUnique(md)
+
+    dice.roll = roll
+    dice.duration = BonusRoll.getDuration(roll)
+    dice.cooldown = SandboxVars.BonusRoll.hrsCooldown
+
+    pl:playEmote("BonusRoll")
     pl:playSoundLocal("BonusRoll")
 
-    BonusRoll.pause(2, function() 
+    BonusRoll.pause(2, function()
         BonusRoll.doShowImage(roll)
     end)
-    
-    if getCore():getDebug() then print(roll) end
 
-    if roll == 3 or roll == 6  then
+    if roll == 3 or roll == 6 then
         BonusRoll.doHealthEffect(roll)
-    elseif roll == 7  then
+    elseif roll == 7 then
         BonusRoll.doSpawnWeaponEffect()
-    elseif roll == 8  then
-        BonusRoll.pause(2, function() 
+    elseif roll == 8 then
+        BonusRoll.pause(2, function()
             pl:playSoundLocal("BreakObject")
             item:getContainer():DoRemoveItem(item)
         end)
@@ -40,60 +54,77 @@ function BonusRoll.doDiceRoll(item)
     return roll
 end
 
-function BonusRoll.isCanRoll()
+function BonusRoll.isCanRoll(fType)
     local md = getPlayer():getModData().BonusRoll
-    if md.roll > 0 then return false end
-    return md.cooldown <= 0
+    if not md then return false end
+    local dice = md[fType]
+    if not dice then return false end
+    return dice.cooldown <= 0
 end
 
-function BonusRoll.isDice(item)
-    return item and item.getFullType and BonusRoll.diceTab[item:getFullType()]
+function BonusRoll.isDice(fType)
+    return BonusRoll.diceTab and BonusRoll.diceTab[fType]
 end
 
 function BonusRoll.invContext(plNum, context, items)
-    for _, entry in ipairs(items) do
-        local item = type(entry) == "table" and entry.items[1] or entry
-        if BonusRoll.isDice(item) then
-            local isCanRoll = BonusRoll.isCanRoll()
-            local effectStr = BonusRoll.getEffectString()
-            local cd = BonusRoll.getCooldown()
-            local dur = BonusRoll.getRemaining()
+    local pl = getSpecificPlayer(plNum)
+    if not pl then return end
 
-            local title = "Bonus Roll"
-            if not isCanRoll and dur > 0 and effectStr ~= "" then
-                title = "Bonus Roll: "..tostring(effectStr)
-            end
+    local md = pl:getModData().BonusRoll
+    if not md then return end
 
-            local opt = context:addOptionOnTop(title, item, function() BonusRoll.doDiceRoll(item) end)
-            opt.iconTexture = getTexture("media/ui/BonusRoll/dice.png")
-            opt.notAvailable = not isCanRoll
-
-            local tip = ISInventoryPaneContextMenu.addToolTip()
-
-            if isCanRoll then
-                tip.description = "Roll the Dice to get Bonus or Penalty"
-            else
-                local desc = ""
-
-                if cd > 0 then
-                    desc = "Cooldown: " .. tostring(cd).." Hours"
-                end
-
-                if dur > 0 then
-                    if desc ~= "" then desc = desc .. "\n" end
-                    desc = desc .. "Duration: " .. tostring(dur)
-                end
-
-                if desc == "" then
-                    desc = "Roll the Dice to get Bonus or Penalty"
-                end
-
-                tip.description = desc
-            end
-
-            opt.toolTip = tip
+    context:removeOptionByName(Translator.getRecipeName("RollOneDice"))
+    --context:removeOptionByName('Roll One Dice')
+    local item = nil
+    for i, diceItem in ipairs(items) do
+        if type(diceItem) == "table" then
+            item = diceItem.items[1]
+        elseif instanceof(diceItem, "InventoryItem") then
+            item = diceItem
         end
     end
+    if not item then return end
+
+    local fType = item:getFullType()
+    if not BonusRoll.isDice(fType) then return end
+
+    local dice = md[fType]
+    if not dice then
+        dice = { cooldown = 0, roll = 0, duration = 0 }
+        md[fType] = dice
+    end
+
+    local canRoll = dice.cooldown <= 0
+    local roll = dice.roll
+    local dur = dice.duration
+    local cd = dice.cooldown
+
+    local title = "Roll The Dice"
+    if roll > 0 and dice.duration > 0 then
+        local effectStr = BonusRoll.getEffectString(roll)
+        if effectStr ~= "" then
+            title = "Roll The Dice: " .. effectStr
+        end
+    elseif not canRoll then
+        title = "Roll The Dice (Cooldown: " .. tostring(cd) .. "Hours)"
+    end
+
+    local opt = context:addOptionOnTop(title,  item, function() BonusRoll.doDiceRoll(item) end)
+
+    opt.iconTexture = getTexture("media/textures/Item_"..tostring(item:getType())..".png")
+    opt.notAvailable = not canRoll
+
+    local tip = ISInventoryPaneContextMenu.addToolTip()
+    if canRoll then
+        tip.description = "Roll the Dice to get Random Bonus or Penalty"
+    else
+        local desc = "Cooldown: " .. tostring(cd) .. " Hours"
+        if dur > 0 then
+            desc = desc .. "\nDuration: " .. tostring(dur)  .. " Minutes"
+        end
+        tip.description = desc
+    end
+    opt.toolTip = tip
 end
 
 Events.OnFillInventoryObjectContextMenu.Remove(BonusRoll.invContext)

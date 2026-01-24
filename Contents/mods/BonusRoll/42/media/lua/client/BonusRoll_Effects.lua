@@ -1,24 +1,56 @@
 --client/BonusRoll_Effects.lua
 BonusRoll = BonusRoll or {}
 
-function BonusRoll.getBonusEffect()
-    local pl = getPlayer()
-    local md = pl:getModData()
-    return md.BonusRoll.roll
+function BonusRoll.getIsInPlay(roll)
+    local md = getPlayer():getModData().BonusRoll
+    if not md then return false end
+
+    local target = tonumber(roll) or roll
+
+    for fType, dice in pairs(md) do
+        if dice and tonumber(dice.roll) and tonumber(dice.duration) and tonumber(dice.duration) > 0 then
+            if tonumber(dice.roll) == target then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function BonusRoll.getDiceEffect(fType)
+    if not fType then return 0 end
+
+    local md = getPlayer():getModData().BonusRoll
+    if not md then return 0 end
+
+    local dice = md[fType]
+    if not dice then return 0 end
+    return dice.roll or 0
 end
 
 function BonusRoll.speedEffectHandler(pl)
     if not pl then return end
-    local md = pl:getModData().BonusRoll
     if pl:isAiming() then return end
-    if not md or md.roll == 0 then return end
-    local roll = md.roll
-    if roll ~= 1 and roll ~= 4 then return end
+
+    local applySlow = false
+    local applyFast = false
+
+    if BonusRoll.getIsInPlay(1) then applySlow = true end
+    if BonusRoll.getIsInPlay(4) then applyFast = true end
+
+    if not applySlow and not applyFast then return end
+    if applySlow and applyFast then return end
 
     local dir = pl:getDir()
     local dx, dy = 0, 0
-    local amt = roll == 4 and 0.08 or 0.03
+    local amt = 0
 
+    if applyFast then
+        amt = 0.08
+    elseif applySlow then
+        amt = 0.03
+    end
 
     if dir == IsoDirections.N then dy = -amt
     elseif dir == IsoDirections.S then dy = amt
@@ -29,6 +61,7 @@ function BonusRoll.speedEffectHandler(pl)
     elseif dir == IsoDirections.SW then dx = -amt; dy = amt
     elseif dir == IsoDirections.SE then dx = amt; dy = amt
     end
+
     local destX = pl:getX() + dx
     local destY = pl:getY() + dy
 
@@ -53,8 +86,8 @@ function BonusRoll.doHealthEffect(roll)
 
     if roll == 6 then
         pl:setGodMod(true)
-        BonusRoll.pause(1, function()  
-            pl:setGodMod(false) 
+        BonusRoll.pause(1, function()
+            pl:setGodMod(false)
         end)
         return
     end
@@ -62,57 +95,36 @@ end
 
 function BonusRoll.hitEffect(pl, targ, wpn, dmg)
     if pl == targ then return end
-    if pl == getPlayer() then
-        local effect =  BonusRoll.getBonusEffect()
-        if effect == 2 or effect == 5 then
-            local bonusDmg = ZombRandFloat(0, SandboxVars.BonusRoll.DamageEffect)
-            local bonusStr = "Damage "
-            local newDmg = 0
-            if instanceof(targ, "IsoZombie")  then
-                local hp = targ:getHealth()
-                if effect == 2 then
-                    newDmg = dmg - bonusDmg
-                    bonusStr = "Damage Penalty: -"..string.format("%.4f", bonusDmg)
-                    targ:setHeath(targ:getHeath()-newDmg)
-                elseif effect == 5 then
-                    newDmg = dmg + bonusDmg
-                    bonusStr = "Damage Bonus: +"..string.format("%.4f", bonusDmg)
-                    targ:setHeath(targ:getHeath()+newDmg)
-                end
-           
-                if SandboxVars.BonusRoll.showHitEffect then
-                    pl:addLineChatElement(tostring(bonusStr))
-                    if getCore():getDebug() then 
-                        print(bonusStr)
-                    end	
+    if pl ~= getPlayer() then return end
+
+    local effects = BonusRoll.getBonusEffects()
+
+    if  BonusRoll.getIsInPlay(2) or  BonusRoll.getIsInPlay(5) then
+        local bonusDmg = ZombRandFloat(0, SandboxVars.BonusRoll.DamageEffect)
+        local bonusStr = "Damage "
+        local newDmg = 0
+        if instanceof(targ, "IsoZombie") then
+            if BonusRoll.getIsInPlay(2) then
+                newDmg = dmg - bonusDmg
+                bonusStr = "Damage Penalty: -"..string.format("%.4f", bonusDmg)
+                targ:setHeath(targ:getHeath()-newDmg)
+            end
+
+            if BonusRoll.getIsInPlay(5) then
+                newDmg = dmg + bonusDmg
+                bonusStr = "Damage Bonus: +"..string.format("%.4f", bonusDmg)
+                targ:setHeath(targ:getHeath()+newDmg)
+            end
+
+            if SandboxVars.BonusRoll.showHitEffect then
+                pl:addLineChatElement(tostring(bonusStr))
+                if getCore():getDebug() then
+                    print(bonusStr)
                 end
             end
         end
-
     end
 end
+
 Events.OnWeaponHitCharacter.Remove(BonusRoll.hitEffect)
 Events.OnWeaponHitCharacter.Add(BonusRoll.hitEffect)
-
-function BonusRoll.delRadiusMarker()   
-    if BonusRoll.RadiusMarker then
-        BonusRoll.RadiusMarker:remove()
-        BonusRoll.RadiusMarker = nil
-    end
-end
-
-function BonusRoll.addRadiusMarker(pl, csq)
-    pl = pl or getPlayer()
-    if not pl or pl:isDead() then return end
-    csq = csq or pl:getCurrentSquare()
-    if not csq then return end
-
-    local r = 1
-    if SandboxVars.BonusRoll.RadiateAoEMarker then 
-        r = ZombRand(0, 101) / 100
-    end
-    BonusRoll.delRadiusMarker()
-    BonusRoll.RadiusMarker = getWorldMarkers():addGridSquareMarker( "circle_center", "circle_only_highlight", csq, r, r, r, true, r)
-end
-
-
